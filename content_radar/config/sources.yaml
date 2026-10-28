@@ -1,0 +1,174 @@
+# Feeds de noticias. "general: true" = portal generalista: so passam itens com termos do setor (sector_keywords).
+# "outlet" e o nome exibido como fonte; em feeds do Google News o veiculo real de cada item tem prioridade.
+news_feeds:
+  # Buscas no Google News (setor eletrico)
+  - name: Google News
+    url: https://news.google.com/rss/search?q=%22setor+el%C3%A9trico%22+when:7d&hl=pt-BR&gl=BR&ceid=BR:pt-BR
+  - name: Google News
+    url: https://news.google.com/rss/search?q=%22mercado+livre+de+energia%22+when:7d&hl=pt-BR&gl=BR&ceid=BR:pt-BR
+  - name: Google News
+    url: https://news.google.com/rss/search?q=%22leil%C3%A3o+de+energia%22+OR+%22leil%C3%A3o+de+transmiss%C3%A3o%22+when:7d&hl=pt-BR&gl=BR&ceid=BR:pt-BR
+  - name: Google News
+    url: https://news.google.com/rss/search?q=%22gera%C3%A7%C3%A3o+distribu%C3%ADda%22+OR+curtailment+when:7d&hl=pt-BR&gl=BR&ceid=BR:pt-BR
+  - name: Google News
+    url: https://news.google.com/rss/search?q=%22bandeira+tarif%C3%A1ria%22+OR+%22tarifa+de+energia%22+when:7d&hl=pt-BR&gl=BR&ceid=BR:pt-BR
+  - name: Google News
+    url: https://news.google.com/rss/search?q=armazenamento+baterias+energia+Brasil+when:7d&hl=pt-BR&gl=BR&ceid=BR:pt-BR
+  - name: Google News
+    url: https://news.google.com/rss/search?q=%22hidrog%C3%AAnio+verde%22+Brasil+when:7d&hl=pt-BR&gl=BR&ceid=BR:pt-BR
+  # Buscas no Google News (IA aplicada a energia)
+  - name: Google News
+    url: https://news.google.com/rss/search?q=%22intelig%C3%AAncia+artificial%22+%22setor+el%C3%A9trico%22+when:7d&hl=pt-BR&gl=BR&ceid=BR:pt-BR
+  - name: Google News
+    url: https://news.google.com/rss/search?q=%22data+centers%22+energia+Brasil+when:7d&hl=pt-BR&gl=BR&ceid=BR:pt-BR
+  - name: Google News
+    url: https://news.google.com/rss/search?q=AI+%22power+grid%22+OR+%22AI+data+centers+electricity%22+when:7d&hl=en-US&gl=US&ceid=US:en
+
+  # Portais especializados
+  - name: MegaWhat
+    url: https://megawhat.energy/feed
+  - name: PV Magazine Brasil
+    url: https://www.pv-magazine-brasil.com/feed/
+  - name: Agência Infra
+    url: https://agenciainfra.com/blog/feed/
+    general: true
+  - name: Canal Energia
+    url: https://news.google.com/rss/search?q=site:canalenergia.com.br+when:7d&hl=pt-BR&gl=BR&ceid=BR:pt-BR
+
+  # Canais gerais de noticias (economia/negocios)
+  - name: G1
+    url: https://g1.globo.com/rss/g1/economia/
+    general: true
+  - name: Folha de S.Paulo
+    url: https://feeds.folha.uol.com.br/mercado/rss091.xml
+    general: true
+  - name: Estadão
+    url: https://www.estadao.com.br/arc/outboundfeeds/feeds/rss/sections/economia/
+    general: true
+  - name: InfoMoney
+    url: https://www.infomoney.com.br/feed/
+    general: true
+  - name: Agência Brasil
+    url: https://agenciabrasil.ebc.com.br/rss/economia/feed.xml
+    general: true
+  - name: Valor Econômico
+    url: https://news.google.com/rss/search?q=site:valor.globo.com+energia+when:7d&hl=pt-BR&gl=BR&ceid=BR:pt-BR
+    general: true
+  - name: CNN Brasil
+    url: https://news.google.com/rss/search?q=site:cnnbrasil.com.br+%22energia+el%C3%A9trica%22+when:7d&hl=pt-BR&gl=BR&ceid=BR:pt-BR
+    general: true
+
+# Orgaos oficiais. Nenhum tem RSS publico acessivel, entao usamos Google News com site:.
+official_feeds:
+  - agency: ANEEL
+    url: https://news.google.com/rss/search?q=site:gov.br/aneel+when:7d&hl=pt-BR&gl=BR&ceid=BR:pt-BR
+  - agency: ONS
+    url: https://news.google.com/rss/search?q=site:ons.org.br+when:7d&hl=pt-BR&gl=BR&ceid=BR:pt-BR
+  - agency: EPE
+    url: https://news.google.com/rss/search?q=site:epe.gov.br+when:7d&hl=pt-BR&gl=BR&ceid=BR:pt-BR
+  - agency: CCEE
+    url: https://news.google.com/rss/search?q=site:ccee.org.br+when:7d&hl=pt-BR&gl=BR&ceid=BR:pt-BR
+  - agency: MME
+    url: https://news.google.com/rss/search?q=site:gov.br/mme+energia+when:7d&hl=pt-BR&gl=BR&ceid=BR:pt-BR
+
+reddit:
+  subreddits:
+    - energy
+    - RenewableEnergy
+    - solar
+    - electricvehicles
+  # A busca em r/brasil e bloqueada (403) para acesso anonimo.
+  searches:
+    - subreddit: investimentos
+      query: energia
+
+trend_keywords:
+  - mercado livre de energia
+  - bandeira tarifária
+  - energia solar
+  - apagão
+  - conta de luz
+  - tarifa de energia
+  - carro elétrico
+  - data center
+
+# Ao menos um destes termos precisa aparecer para um sinal ser considerado do setor.
+sector_keywords:
+  - energia
+  - elétric
+  - eletric
+  - aneel
+  - ons
+  - epe
+  - ccee
+  - mme
+  - hidrelétric
+  - termelétric
+  - eólic
+  - solar
+  - fotovoltaic
+  # "transmissão" sozinho pega "transmissão ao vivo"; usar so termos compostos.
+  - linha de transmissão
+  - linhas de transmissão
+  - leilão de transmissão
+  - transmissora
+  - distribuidora
+  - tarifa de luz
+  - conta de luz
+  - bandeira tarifária
+  - megawatt
+  - gigawatt
+  - mwh
+  - curtailment
+  - power grid
+  - electricity
+  - data center
+  - eletrobras
+  - hidrogênio
+  - baterias
+
+# Categorias por palavra-chave (o emoji aparece antes do titulo de cada noticia no Telegram). Matching sem acento e sem caixa; termos com ate 4 letras exigem palavra inteira,
+# os demais casam como prefixo (ex.: "elétric" pega "elétrica" e "elétrico").
+categories:
+  regulacao:
+    label: Regulação
+    emoji: "⚖️"
+    keywords: [aneel, resolução normativa, consulta pública, regulação, regulatório, marco legal, medida provisória, mp, projeto de lei, tcu]
+  operacao:
+    label: Operação do sistema
+    emoji: "🎛️"
+    keywords: [ons, operador nacional, apagão, blecaute, reservatório, despacho, curtailment, corte de geração, sistema interligado, sin]
+  planejamento:
+    label: Planejamento
+    emoji: "🗺️"
+    keywords: [epe, plano decenal, pde, planejamento energético, leilão, leilões, mme, ministério de minas]
+  comercializacao:
+    label: Comercialização & mercado livre
+    emoji: "💱"
+    keywords: [ccee, mercado livre, ambiente de contratação, pld, preço de liquidação, comercializadora, abertura do mercado, acl]
+  tarifas:
+    label: Tarifas
+    emoji: "💰"
+    keywords: [bandeira tarifária, tarifa, conta de luz, reajuste, subsídio, cde, encargo]
+  renovaveis:
+    label: Geração renovável
+    emoji: "☀️"
+    keywords: [solar, fotovoltaic, eólic, eolic, geração distribuída, hidrogênio, biomassa, offshore, renovável, renováveis]
+  rede:
+    label: Transmissão & distribuição
+    emoji: "🔌"
+    keywords: [transmissão de energia, linha de transmissão, linhas de transmissão, leilão de transmissão, leilões de transmissão, transmissora, distribuidora, distribuição, concessão, renovação de concessões, enel, light, cemig, copel, equatorial, neoenergia, cpfl, energisa]
+  armazenamento:
+    label: Armazenamento
+    emoji: "🔋"
+    keywords: [armazenamento, bateria, baterias, bess, usina reversível]
+  ia:
+    label: IA & digitalização
+    emoji: "🤖"
+    keywords: [inteligência artificial, ia, ai, machine learning, data center, data centers, digitalização, smart grid, medidor inteligente, algoritmo]
+
+source_weights:
+  official: 3.0
+  news: 2.0
+  trends: 1.0
+  reddit: 0.5

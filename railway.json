@@ -1,0 +1,8 @@
+{
+  "$schema": "https://railway.com/railway.schema.json",
+  "deploy": {
+    "startCommand": "alembic upgrade head && python main.py",
+    "cronSchedule": "0 11 * * 1",
+    "restartPolicyType": "NEVER"
+  }
+}

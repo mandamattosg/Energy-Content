@@ -1,0 +1,26 @@
+# Credenciais: qualquer variante de .env fica fora, exceto o modelo sem valores
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Bancos locais de teste (SQLite)
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs e saidas de dry-run
+*.log
+
+# Editores e sistema operacional
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

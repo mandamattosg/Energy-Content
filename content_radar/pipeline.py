@@ -21,6 +21,16 @@ from content_radar.utils.hashing import canonical_url
 logger = logging.getLogger("content_radar.pipeline")
 
 
+def _memory_note() -> str:
+    """Pico de memoria do processo (so Linux/Railway), para diagnosticar mortes por falta de memoria."""
+    try:
+        import resource
+    except ImportError:
+        return ""
+    peak_mb = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024
+    return f" (pico de memoria {peak_mb:.0f} MB)"
+
+
 @dataclass
 class PipelineOptions:
     dry_run: bool = False
@@ -81,6 +91,7 @@ class WeeklyPipeline:
                     db.rollback()
                     return 0
 
+                logger.info("Gerando resumo com o LLM")
                 result = self._generator.generate(ranked, period_start, period_end)
                 context = DeliveryContext(period_start, period_end, source_counts)
 
@@ -102,6 +113,7 @@ class WeeklyPipeline:
                     summary=result.summary.model_dump(mode="json"),
                 )
 
+                logger.info("Enviando para %s", self._output.name)
                 delivery = self._output.send(result.summary, context)
                 logger.info("Entrega: %s", delivery)
                 run.delivery_status = "delivered"
@@ -122,12 +134,13 @@ class WeeklyPipeline:
     def _collect(self) -> list[Signal]:
         signals: list[Signal] = []
         for collector in self._collectors:
+            logger.info("Iniciando coletor %s", collector.name)
             try:
                 collected = collector.collect()
             except Exception:  # noqa: BLE001 - um coletor quebrado nao derruba os outros
                 logger.exception("Coletor %s falhou", collector.name)
                 continue
-            logger.info("Coletor %s: %s sinais", collector.name, len(collected))
+            logger.info("Coletor %s: %s sinais%s", collector.name, len(collected), _memory_note())
             signals.extend(collected)
         return signals
 

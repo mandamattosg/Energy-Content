@@ -68,6 +68,18 @@ class FakeSession:
         return self._responses.pop(0)
 
 
+def test_reddit_collector_gives_up_after_consecutive_blocks(monkeypatch):
+    monkeypatch.setattr(reddit_module.time, "sleep", lambda seconds: None)
+    session = FakeSession([FakeResponse(status_code=429)] * 4)
+
+    signals = RedditCollector(["a", "b", "c"], [], session=session).collect()
+
+    assert signals == []
+    # 2 tentativas em "a" + 2 em "b"; "c" nem e consultado.
+    assert len(session.urls) == 4
+    assert not any("/r/c/" in url for url in session.urls)
+
+
 def test_reddit_collector_retries_after_rate_limit_and_falls_back_to_json(monkeypatch):
     monkeypatch.setattr(reddit_module.time, "sleep", lambda seconds: None)
     session = FakeSession([

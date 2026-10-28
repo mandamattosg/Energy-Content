@@ -1,6 +1,7 @@
 """Entrypoint do cron semanal (Railway): roda o pipeline uma vez e sai com 0 (ok) ou 1 (falha)."""
 
 import argparse
+import faulthandler
 import logging
 import sys
 
@@ -30,17 +31,23 @@ def main() -> int:
         format="%(asctime)s %(levelname)s %(name)s: %(message)s",
         force=True,
     )
+    # Se o processo travar ou receber sinal fatal, despeja no log onde estava.
+    faulthandler.enable()
     args = parse_args()
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
 
+    logger = logging.getLogger("content_radar.main")
+    logger.info("Energy Radar iniciando")
     pipeline = WeeklyPipeline(
         session_factory=SessionLocal,
         collectors=default_collectors(),
         generator=None if args.skip_llm else WeeklySummaryGenerator(GeminiProvider()),
         output=TelegramOutput(),
     )
-    return pipeline.run(PipelineOptions(dry_run=args.dry_run, skip_llm=args.skip_llm))
+    exit_code = pipeline.run(PipelineOptions(dry_run=args.dry_run, skip_llm=args.skip_llm))
+    logger.info("Energy Radar finalizado (codigo de saida %s)", exit_code)
+    return exit_code
 
 
 if __name__ == "__main__":

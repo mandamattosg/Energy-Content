@@ -22,6 +22,9 @@ logger = logging.getLogger(__name__)
 # O Reddit devolve 429 para requisicoes anonimas em sequencia rapida.
 REQUEST_INTERVAL_SECONDS = 3.0
 MAX_RATE_LIMIT_WAIT_SECONDS = 30.0
+# Uma nova tentativa por alvo; dois alvos bloqueados em seguida = desiste do Reddit nesta execucao.
+RATE_LIMIT_ATTEMPTS = 2
+MAX_CONSECUTIVE_BLOCKS = 2
 
 
 class RedditRateLimitError(RuntimeError):
@@ -68,10 +71,18 @@ class RedditCollector(Collector):
         ]
 
         signals: list[Signal] = []
+        consecutive_blocks = 0
         for index, (subreddit, path, params) in enumerate(targets):
+            if consecutive_blocks >= MAX_CONSECUTIVE_BLOCKS:
+                logger.warning("Reddit bloqueando seguidamente (IP de datacenter?); pulando os alvos restantes")
+                break
             if index:
                 time.sleep(self._request_interval)
             posts = self._fetch_with_retry(path, params)
+            if posts is None:
+                consecutive_blocks += 1
+                continue
+            consecutive_blocks = 0
             for post in posts:
                 signal = self._post_to_signal(subreddit, post)
                 if signal is not None:
@@ -79,17 +90,21 @@ class RedditCollector(Collector):
             logger.info("Reddit %s: %s posts", path, len(posts))
         return signals
 
-    def _fetch_with_retry(self, path: str, params: dict[str, str]) -> list[dict[str, Any]]:
+    def _fetch_with_retry(self, path: str, params: dict[str, str]) -> list[dict[str, Any]] | None:
+        """Posts do alvo; None quando o Reddit bloqueou por rate limit."""
         attempts = max(settings.collector_retry_attempts, 1)
         for attempt in range(1, attempts + 1):
             try:
                 posts = self._fetch_rss(path, params)
                 return posts or self._fetch_json(path, params)
             except RedditRateLimitError as exc:
-                wait = min(exc.retry_after_seconds or 10.0 * attempt, MAX_RATE_LIMIT_WAIT_SECONDS)
-                logger.info("Reddit rate limit em %s (tentativa %s); aguardando %.0fs", path, attempt, wait)
-                if attempt < attempts:
-                    time.sleep(wait)
+                if attempt >= RATE_LIMIT_ATTEMPTS:
+                    logger.info("Reddit bloqueou %s (rate limit); desistindo", path)
+                    return None
+                wait = min(exc.retry_after_seconds or 10.0, MAX_RATE_LIMIT_WAIT_SECONDS)
+                logger.info("Reddit rate limit em %s; nova tentativa em %.0fs", path, wait)
+                time.sleep(wait)
+                continue
             except (requests.RequestException, RuntimeError, ValueError, JSONDecodeError) as exc:
                 logger.warning("Reddit %s falhou (tentativa %s): %s", path, attempt, exc)
                 if attempt < attempts:

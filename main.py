@@ -11,6 +11,7 @@ import truststore
 truststore.inject_into_ssl()
 
 from content_radar.collectors import default_collectors
+from content_radar.db.migrations import run_migrations
 from content_radar.db.session import SessionLocal
 from content_radar.llm.gemini import GeminiProvider
 from content_radar.llm.weekly_summary import WeeklySummaryGenerator
@@ -39,6 +40,12 @@ def main() -> int:
 
     logger = logging.getLogger("content_radar.main")
     logger.info("Energy Radar iniciando")
+    try:
+        run_migrations()
+    except Exception:
+        logger.exception("Falha ao aplicar migracoes (DATABASE_URL configurada?)")
+        return 1
+
     pipeline = WeeklyPipeline(
         session_factory=SessionLocal,
         collectors=default_collectors(),

@@ -7,9 +7,12 @@ from content_radar.config.settings import settings
 from content_radar.db.models import Base
 
 config = context.config
-config.set_main_option("sqlalchemy.url", settings.sqlalchemy_database_url.replace("%", "%%"))
+# Quem chama pelo codigo (main.py, testes) pode passar a URL; pela linha de comando vale o settings.
+database_url = config.attributes.get("database_url") or settings.sqlalchemy_database_url
+config.set_main_option("sqlalchemy.url", database_url.replace("%", "%%"))
 
-if config.config_file_name is not None:
+# Chamado de dentro do main.py, o fileConfig desligaria os loggers do projeto ja criados.
+if config.config_file_name is not None and config.attributes.get("configure_logger", True):
     fileConfig(config.config_file_name)
 
 target_metadata = Base.metadata

@@ -2,8 +2,6 @@
 
 Coleta semanal de notícias do setor elétrico brasileiro (portais especializados, imprensa geral, ANEEL/ONS/EPE/CCEE/MME, Reddit e Google Trends), filtra duplicadas, classifica e ranqueia, gera um resumo com o Gemini e envia para um bot do Telegram.
 
-Projeto irmão do `get-content` (mesma arquitetura em camadas, mesma `GEMINI_API_KEY`).
-
 ```
 coleta ─► janela de 7 dias ─► classificação (setor + categoria) ─► dedup (inclusive semanas anteriores)
        ─► ranking (top 40) ─► Gemini (ranking de importância) ─► Telegram ─► Postgres
